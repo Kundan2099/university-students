@@ -1,0 +1,134 @@
+@extends('pages.layouts.app')
+
+@section('content')
+    <div class="container" style="margin-top:10px;">
+        <div class="container">
+            <h1>Add Student</h1>
+
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary" type="button">Back</button>
+            </div>
+            <form onsubmit="handleFormSubmit(event)">
+                @csrf
+                <div class="p-3">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="student_name">Student Name</label>
+                                <input type="text" name="student_name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="class_teacher_id">Class Teacher</label>
+                                <select name="class_teacher_id" id="class_teacher_id" class="form-control">
+                                    <option value="">Select a teacher</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="class">Class</label>
+                                <input type="text" name="class" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="admission_date">Admission Date</label>
+                                <input type="date" name="admission_date" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="yearly_fees">Yearly Fees</label>
+                                <input type="number" name="yearly_fees" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col d-flex justify-content-end">
+                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+@endsection
+
+@section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+        integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            function loadTeachers() {
+                fetch('http://127.0.0.1:8000/api/student/teacher') // Replace with your API URL
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json(); // Convert response to JSON
+                    })
+                    .then(data => {
+                        const teachersData = data.data
+                        console.log("data", teachersData);
+                        populateTeachesrDropdown(teachersData); // Call the function to populate the dropdown
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                    });
+            }
+
+            function populateTeachesrDropdown(teachers) {
+                // dropdown.innerHTML = '<option value="">Select a Teacher</option>';
+                const dropdown = document.getElementById("class_teacher_id");
+
+                teachers.forEach(teacher => {
+                    const option = document.createElement('option');
+                    option.value = teacher.id; // Using the teacher ID as the value
+                    option.text = teacher.name; // Using the teacher name as the text
+                    dropdown.appendChild(option);
+                });
+            }
+
+            loadTeachers(); // Call the function to load teachers
+
+        });
+
+        const handleFormSubmit = (event) => {
+            event.preventDefault();
+            const form = new FormData(event.target);
+
+            const data = {
+                _token: "{{ csrf_token() }}",
+                student_name: form.get('student_name'),
+                class_teacher_id: form.get('class_teacher_id'),
+                class: form.get('class'),
+                admission_date: form.get('admission_date'),
+                yearly_fees: form.get('yearly_fees')
+            }
+
+            $.ajax({
+                url: "{{ route('handle.student.create') }}",
+                method: 'POST',
+                data: data,
+                success: function(response) {
+                    alert(response.message);
+                    window.location = "{{ route('student.list') }}"
+                },
+                error: function(xhr, status, error) {
+                    alert(response.message);
+                }
+            });
+        }
+    </script>
+@endsection
