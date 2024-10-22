@@ -1,12 +1,13 @@
-@extends('pages.layouts.app')
+{{-- @extends('layouts.app') --}}
+@extends('layouts.app')
 
 @section('content')
-    <div class="container" style="margin-top:10px;">
+    <div class="container" style="margin-top:10px; background-color: white; border: 1px solid #ccc; border-radius: 10px;">
         <div class="container">
-            <h1>Edit Student</h1>
+            <h1 class="font-semibold text-xl text-gray-800 leading-tight">Edit Student</h1>
 
             <div class="d-flex justify-content-end">
-                <button class="btn btn-primary" type="button">Back</button>
+                <a class="btn btn-primary" href="{{ route('student.list') }}"> Back</a>
             </div>
             <form onsubmit="handleFormSubmit(event)">
                 @csrf

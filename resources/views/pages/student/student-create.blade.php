@@ -1,12 +1,13 @@
-@extends('pages.layouts.app')
+{{-- @extends('layouts.app') --}}
+@extends('layouts.app')
 
 @section('content')
-    <div class="container" style="margin-top:10px;">
-        <div class="container">
-            <h1>Add Student</h1>
+<div class="container" style="margin-top:10px; background-color: white; border: 1px solid #ccc; border-radius: 10px;">
+    <div class="container">
+            <h1 class="font-semibold text-xl text-gray-800 leading-tight">Add Student</h1>
 
             <div class="d-flex justify-content-end">
-                <button class="btn btn-primary" type="button">Back</button>
+                <a class="btn btn-primary" href="{{ route('student.list') }}"> Back</a>
             </div>
             <form onsubmit="handleFormSubmit(event)">
                 @csrf
@@ -57,10 +58,9 @@
                 </div>
             </form>
         </div>
-
-
     </div>
 @endsection
+
 
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
